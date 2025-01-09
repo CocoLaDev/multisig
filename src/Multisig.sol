@@ -40,20 +40,38 @@ contract Multisig {
         _;
     }
 
+    /**
+     * @dev Ajoute un nouvel administrateur.
+     * @param newAdmin L'adresse du nouvel administrateur à ajouter.
+     */
     function addAdmin(address newAdmin) public onlySigner {
         bytes memory adminAddress = abi.encodePacked(newAdmin);
         _transactions[++_nonce] = Tx(TxType.AddAdmin, new address[](0), new address[](0), TxStatus.Created, address(0), 0, adminAddress);
     }
 
+    /**
+     * @dev Supprime un administrateur existant.
+     * @param admin L'adresse de l'administrateur à supprimer.
+     */
     function removeAdmin(address admin) public onlySigner {
         bytes memory adminAddress = abi.encodePacked(admin);
         _transactions[++_nonce] = Tx(TxType.RemoveAdmin, new address[](0), new address[](0), TxStatus.Created, address(0), 0, adminAddress);
     }
 
+    /**
+     * @dev Soumet une nouvelle transaction.
+     * @param to L'adresse à laquelle envoyer des fonds.
+     * @param value Le montant à envoyer.
+     * @param data Les données à envoyer avec la transaction.
+     */
     function submitTransaction(address to, uint value, bytes memory data) public onlySigner {
         _transactions[++_nonce] = Tx(TxType.Transaction, new address[](0), new address[](0), TxStatus.Created, to, value, data);
     }
 
+    /**
+     * @dev Confirme une transaction soumise.
+     * @param nonce Le nonce de la transaction à confirmer.
+     */
     function confirmTransaction(uint16 nonce) public onlySigner {
         require(_transactions[nonce].status == TxStatus.Created, "Transaction already confirmed or revoked");
         _transactions[nonce].validated.push(msg.sender);
@@ -62,6 +80,10 @@ contract Multisig {
         }
     }
 
+    /**
+     * @dev Révoque une transaction soumise.
+     * @param nonce Le nonce de la transaction à révoquer.
+     */
     function revokeTransaction(uint16 nonce) public onlySigner {
         require(_transactions[nonce].status == TxStatus.Created, "Transaction already confirmed or revoked");
         _transactions[nonce].revoked.push(msg.sender);
@@ -70,6 +92,10 @@ contract Multisig {
         }
     }
 
+    /**
+     * @dev Exécute une transaction confirmée.
+     * @param nonce Le nonce de la transaction à exécuter.
+     */
     function executeTransaction(uint16 nonce) public onlySigner {
         Tx storage transaction = _transactions[nonce];
         require(transaction.status == TxStatus.Confirmed, "Transaction not confirmed");
@@ -93,10 +119,18 @@ contract Multisig {
         }
     }
 
+    /**
+     * @dev Récupère la liste des signataires.
+     * @return Un tableau d'adresses des signataires.
+     */
     function getSigners() public view returns(address[] memory){
         return _signers;
     }
 
+    /**
+     * @dev Récupère toutes les transactions.
+     * @return Un tableau de transactions.
+     */
     function getTransactions() public view returns(Tx[] memory){
         Tx[] memory transactions = new Tx[](_nonce);
         for(uint i = 0; i < _nonce; i+=1){
@@ -105,18 +139,35 @@ contract Multisig {
         return transactions;
     }
 
+    /**
+     * @dev Récupère une transaction spécifique par son nonce.
+     * @param nonce Le nonce de la transaction à récupérer.
+     * @return La transaction correspondante.
+     */
     function getTransaction(uint16 nonce) public view returns(Tx memory){
         return _transactions[nonce];
     }
 
+    /**
+     * @dev Récupère le nonce actuel.
+     * @return Le nonce actuel.
+     */
     function getNonce() public view returns(uint16){
         return _nonce;
     }
 
+    /**
+     * @dev Récupère le nombre minimum de signataires requis.
+     * @return Le nombre minimum de signataires.
+     */
     function getMinSigners() public view returns(uint8){
         return _minSigners;
     }
 
+    /**
+     * @dev Récupère le nombre de confirmations requis.
+     * @return Le nombre de confirmations.
+     */
     function getConfimations() public view returns(uint8){
         return _confimations;
     }
