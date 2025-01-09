@@ -1,66 +1,44 @@
-## Foundry
+# Multisig Wallet
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Description
 
-Foundry consists of:
+Le contrat `Multisig` est un portefeuille multi-signatures qui permet à plusieurs administrateurs de gérer des transactions de manière sécurisée. Ce type de contrat est particulièrement utile pour les organisations ou les groupes qui souhaitent partager le contrôle des fonds et des transactions, en nécessitant plusieurs signatures pour valider une action.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Fonctionnalités
 
-## Documentation
+- **Ajout et suppression d'administrateurs** : Les administrateurs peuvent être ajoutés ou supprimés par les signataires existants.
+- **Soumission de transactions** : Les signataires peuvent soumettre des transactions à exécuter.
+- **Confirmation et révocation de transactions** : Les signataires peuvent confirmer ou révoquer des transactions soumises.
+- **Exécution de transactions** : Une fois qu'une transaction est confirmée par le nombre requis de signataires, elle peut être exécutée.
+- **Récupération des signataires et des transactions** : Les signataires peuvent récupérer la liste des signataires et des transactions effectuées.
 
-https://book.getfoundry.sh/
+## Exemples de fonctions
 
-## Usage
+- **Ajouter un administrateur** :
+  ```solidity
+  multisig.addAdmin(newAdminAddress);
+  ```
 
-### Build
+- **Soumettre une transaction** :
+  ```solidity
+  multisig.submitTransaction(toAddress, value, data);
+  ```
 
-```shell
-$ forge build
-```
+- **Confirmer une transaction** :
+  ```solidity
+  multisig.confirmTransaction(nonce);
+  ```
 
-### Test
+## Contribuer
 
-```shell
-$ forge test
-```
+Les contributions sont les bienvenues ! Si vous souhaitez améliorer ce projet, veuillez suivre ces étapes :
 
-### Format
+1. Forkez le projet.
+2. Créez une nouvelle branche (`git checkout -b feature/YourFeature`).
+3. Apportez vos modifications et validez-les (`git commit -m 'Add some feature'`).
+4. Poussez votre branche (`git push origin feature/YourFeature`).
+5. Ouvrez une Pull Request.
 
-```shell
-$ forge fmt
-```
+## License
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Ce projet est sous licence UNLICENSED. Veuillez consulter le fichier `LICENSE` pour plus de détails.
